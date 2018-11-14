@@ -129,7 +129,11 @@ $(document).ready(function () {
 </div>
 
 
+<pre class="r"><code>#Make the counts in the lobster size table in tidy format
 
+lobster_size_tidy &lt;- as.data.frame(lobster_size) %&gt;% 
+  filter(size != &quot;-99999&quot;) %&gt;% 
+  expand.dft(freq = &quot;count&quot;)</code></pre>
 
 
 

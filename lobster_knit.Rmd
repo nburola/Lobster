@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, include=FALSE}
 library(tidyverse)
+library(vcdExtra)
 ```
 
 ```{r, include=FALSE}
@@ -18,5 +19,15 @@ lobster_size <- read_csv("lobster_size_abundance.csv")
 lobster_trap <- read_csv("lobster_traps.csv")
 lobster_size
 lobster_trap
+```
+
+
+```{r}
+#Make the counts in the lobster size table in tidy format
+
+lobster_size_tidy <- as.data.frame(lobster_size) %>% 
+  filter(size != "-99999") %>% 
+  expand.dft(freq = "count")
+
 ```
 
