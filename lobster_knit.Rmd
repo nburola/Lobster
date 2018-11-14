@@ -10,8 +10,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, include=FALSE}
+#need to install lmtest package in order to install vcdExtra packages
+
 library(tidyverse)
 library(vcdExtra)
+
 ```
 
 ```{r, include=FALSE}
