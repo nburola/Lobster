@@ -1,0 +1,22 @@
+---
+title: "LETR Sites"
+author: "Nathaniel Burola, Karan Shetty, Priscilla Hare"
+date: "November 13, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+library(tidyverse)
+```
+
+```{r, include=FALSE}
+lobster_size <- read_csv("lobster_size_abundance.csv")
+lobster_trap <- read_csv("lobster_traps.csv")
+lobster_size
+lobster_trap
+```
+
