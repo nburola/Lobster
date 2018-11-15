@@ -60,3 +60,35 @@ CARPmerge <- merge(carp_traps, sizeCARP, by = "year")
 
 ```
 
+```{r}
+#Part 4
+
+legal_lobster<-lobster_size_tidy %>% 
+  filter(year == "2017") %>% 
+  mutate(
+    legal = case_when(
+      size >= 82.6 ~ "legal",
+      size < 82.6 ~ "illegal"
+    )
+  ) %>% 
+  select("site", "size", "legal") %>% 
+  group_by(site) %>% 
+  count(legal) 
+  
+legal_lobster2 <- as.data.frame(legal_lobster) %>% 
+  spread(legal, n) %>% 
+  select(-site)
+
+rownames(legal_lobster2) <- c("AQUE", "CARP", "IVEE", "MOHK", "NAPL")
+
+legal_lobster2
+
+legal_prop <- prop.table(as.matrix(legal_lobster2), 1)
+
+legal_prop
+
+legal_x2 <- chisq.test(legal_lobster2)
+legal_x2
+
+```
+
