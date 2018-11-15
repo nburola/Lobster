@@ -34,3 +34,29 @@ lobster_size_tidy <- as.data.frame(lobster_size) %>%
 
 ```
 
+```{r}
+
+carp_traps <- lobster_trap %>% 
+  filter(site == "CARP") %>% 
+  select("year","site", "traps") %>% 
+  group_by(year) %>% 
+  summarize("CARP traps" = sum(traps)) 
+
+aque_traps <- lobster_trap %>% 
+  filter(site == "AQUE") %>% 
+  select("year","site", "traps") %>% 
+  group_by(year) %>% 
+  summarize("AQUE traps" = sum(traps)) 
+  
+sizeCARP <- lobster_size_tidy %>% 
+  filter(site == "CARP") %>% 
+  select("year","site", "size") %>% 
+  group_by(year) %>% 
+  summarize(number = n()) 
+
+
+CARPmerge <- merge(carp_traps, sizeCARP, by = "year")
+
+
+```
+
