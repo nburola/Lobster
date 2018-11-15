@@ -96,10 +96,10 @@ trap_graph
 
 #graphs of avg counts for lobsters and traps
 
-lobster_avg<-lobster_size_tidy %>% 
+lobster_avg<-lobster_size_t %>% 
   select("year", "site", "size") %>% 
   group_by(year, site) %>% 
-  summarize(mean = mean(size)) 
+  count(site)
  
 avg_graph <- lobster_avg %>% 
   ggplot(aes(x = year, y = mean))+
