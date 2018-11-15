@@ -79,7 +79,22 @@ lobster_bar_2012 = ggplot(lobster_size_2012, aes(x = size))  +
 
 lobster_bar_2012
 
-# Created a bar graph displaying size counts across all five sites for 2012. WIP
+# same but for 2017
+lobster_size_2017 = lobster_size_tidy %>% 
+  group_by(site, year) %>% 
+  select(year, site, size) %>% 
+  filter(year == "2017")
+
+lobster_bar_2017 = ggplot(lobster_size_2017, aes(x = size))  +
+  geom_bar(aes(color = site)) +
+  facet_wrap(~ site) +
+  xlab("Year") +
+  ylab("Lobster size")
+
+
+lobster_bar_2017
+
+# Created a bar graph displaying size counts across all five sites for 2012 and 2017. WIP
 
 
 
