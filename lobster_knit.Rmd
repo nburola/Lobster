@@ -124,15 +124,30 @@ legal_lobster<-lobster_size_tidy %>%
 
 #spread the table to put in the format of a contingency table
 legal_lobster2 <- as.data.frame(legal_lobster) %>% 
-  spread(legal, n) %>% 
+  spread(legal, n) 
+
+legal_lobster3 <- legal_lobster2 %>% 
   select(-site)
 
-rownames(legal_lobster2) <- c("AQUE", "CARP", "IVEE", "MOHK", "NAPL")
-
+rownames(legal_lobster3) <- c("AQUE", "CARP", "IVEE", "MOHK", "NAPL")
 
 #create a table of proportions
-legal_prop <- prop.table(as.matrix(legal_lobster2), 1)
+legal_prop <- prop.table(as.matrix(legal_lobster3), 1)
 
+legal_prop2 <- as.data.frame(legal_prop) %>% 
+  mutate(site = c("AQUE", "CARP", "IVEE", "MOHK", "NAPL")) %>% 
+  select("site", "illegal", "legal")
+
+legal_matrix <- as.matrix(legal_lobster3)
+
+count_prop <- CrossTable(legal_matrix, digits = 3, prop.r = TRUE, prop.c = FALSE, prop.t = FALSE, prop.chisq = FALSE)
+
+#trying to male a joined table but not quite there
+new <- left_join(legal_lobster2, legal_prop2, by = 'site') %>% 
+  mutate(
+    legal = legal.x (legal.y),
+    illegal = illegal.x (illegal.y)
+  )
 
 #run a chi square test on the table of counts
 legal_x2 <- chisq.test(legal_lobster2)
