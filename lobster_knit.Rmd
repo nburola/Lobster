@@ -14,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(vcdExtra)
+library(kableExtra)
+library(gmodels)
 
 ```
 
@@ -58,6 +60,76 @@ sizeCARP <- lobster_size_tidy %>%
 CARPmerge <- merge(carp_traps, sizeCARP, by = "year")
 
 
+
+
+```
+
+```{r}
+#Making graphs of counts at each site each year for lobsters and traps
+
+lobster_count<-lobster_size_tidy %>% 
+  select("year", "site", "size") %>% 
+  group_by(year) %>% 
+  count(site) 
+ 
+abundance <- lobster_count %>% 
+  ggplot(aes(x = year, y = n))+
+  geom_col()+
+  facet_wrap(~site)
+abundance
+
+trap_count<-lobster_trap %>% 
+  filter(site == "AQUE" | site == "CARP" | site == "IVEE" | site == "MOHK" |site == "NAPL") %>% 
+  select("year", "site", "traps", "date") %>% 
+  group_by(year, site, date) %>% 
+  summarize("traps" = sum(traps)) 
+
+trap_graph <- trap_count %>% 
+  ggplot(aes(x = year, y = traps)) +
+  geom_col()+
+  facet_wrap(~site)
+trap_graph
+```
+
+
+```{r}
+
+#graphs of avg counts for lobsters and traps
+
+lobster_avg<-lobster_size_tidy %>% 
+  select("year", "site", "size") %>% 
+  group_by(year, site) %>% 
+  summarize(mean = mean(size)) 
+ 
+avg_graph <- lobster_avg %>% 
+  ggplot(aes(x = year, y = mean))+
+  geom_col()+
+  facet_wrap(~site)
+avg_graph
+
+#uses mean for each year
+trap_avg<-lobster_trap %>% 
+  filter(site == "AQUE" | site == "CARP" | site == "IVEE" | site == "MOHK" |site == "NAPL") %>% 
+  select("year", "site", "traps") %>% 
+  group_by(year, site) %>% 
+  summarize("mean" = mean(traps)) 
+
+#uses mean trap from surveys each year
+trap_avg2 <- trap_count %>% 
+  group_by(year, site) %>% 
+  summarize(mean = mean(traps))
+
+trap_graph_avg <- trap_avg %>% 
+  ggplot(aes(x = year, y = mean)) +
+  geom_col()+
+  facet_wrap(~site)
+trap_graph_avg
+
+trap_graph_avg2 <- trap_avg2 %>% 
+  ggplot(aes(x = year, y = mean)) +
+  geom_col()+
+  facet_wrap(~site)
+trap_graph_avg2
 ```
 
 
@@ -138,16 +210,31 @@ legal_prop2 <- as.data.frame(legal_prop) %>%
   mutate(site = c("AQUE", "CARP", "IVEE", "MOHK", "NAPL")) %>% 
   select("site", "illegal", "legal")
 
-legal_matrix <- as.matrix(legal_lobster3)
 
-count_prop <- CrossTable(legal_matrix, digits = 3, prop.r = TRUE, prop.c = FALSE, prop.t = FALSE, prop.chisq = FALSE)
+#combines counts and proportions but not neat
+#legal_matrix <- as.matrix(legal_lobster3)
+#count_prop <- CrossTable(legal_matrix, digits = 3, prop.r = TRUE, prop.c = FALSE, prop.t = FALSE, prop.chisq = FALSE)
+#count_prop
 
-#trying to male a joined table but not quite there
-new <- left_join(legal_lobster2, legal_prop2, by = 'site') %>% 
-  mutate(
-    legal = legal.x (legal.y),
-    illegal = illegal.x (illegal.y)
-  )
+#making a joined table
+legal_count_prop <- left_join(legal_lobster2, legal_prop2, by = 'site') %>% 
+  select("site", "legal.x", "legal.y", "illegal.x", "illegal.y") %>% 
+  mutate(legal.y = round(legal.y, 3),
+         illegal.y = round(illegal.y, 3),
+         site = c("Arroyo Quemado", "Carpinteria", "Isla Vista", "Mohawk Reef", "Naples Reef" ))
+
+#making the table pretty  
+count_prop_table <- kable(
+  legal_count_prop, 
+  align = c('r', 'c', 'c', 'c', 'c', 'c'), #alligns the first column left, and all subsequent columns centered
+  col.names = c(" ", "Count", "Proportion", "Count", "Proportion"), 
+  caption = "Table x: insert description and chi-square test results here)." 
+  )  %>%  
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE, font_size = 12) %>% 
+  add_header_above(c(" ", "Legal" = 2, "Illegal" = 2)) %>%
+  column_spec(1, bold = TRUE, color = "navy", width = "3cm")
+
+count_prop_table
 
 #run a chi square test on the table of counts
 legal_x2 <- chisq.test(legal_lobster2)
