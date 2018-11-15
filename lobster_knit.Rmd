@@ -91,8 +91,9 @@ lobster_bar_2012
 
 
 ```{r}
-#Part 4
+#Part 4: Proportions of legal (over 82.6mm) lobster sizes for each site
 
+#create a table of counts for legal and illegal sizes
 legal_lobster<-lobster_size_tidy %>% 
   filter(year == "2017") %>% 
   mutate(
@@ -105,18 +106,20 @@ legal_lobster<-lobster_size_tidy %>%
   group_by(site) %>% 
   count(legal) 
   
+
+#spread the table to put in the format of a contingency table
 legal_lobster2 <- as.data.frame(legal_lobster) %>% 
   spread(legal, n) %>% 
   select(-site)
 
 rownames(legal_lobster2) <- c("AQUE", "CARP", "IVEE", "MOHK", "NAPL")
 
-legal_lobster2
 
+#create a table of proportions
 legal_prop <- prop.table(as.matrix(legal_lobster2), 1)
 
-legal_prop
 
+#run a chi square test on the table of counts
 legal_x2 <- chisq.test(legal_lobster2)
 legal_x2
 
