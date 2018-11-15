@@ -60,6 +60,36 @@ CARPmerge <- merge(carp_traps, sizeCARP, by = "year")
 
 ```
 
+
+```{r}
+# Part 3: Changes in lobster size between MPA and non-MPA sites
+
+lobster_size_2012 = lobster_size_tidy %>%
+  group_by(site, year) %>%
+  select(year, site, size) %>% 
+  filter(year == "2012")
+
+lobster_size_2012
+
+lobster_bar_2012 = ggplot(lobster_size_2012, aes(x = size))  +
+  geom_bar(aes(color = site)) +
+  facet_wrap(~ site) +
+  xlab("Year") +
+  ylab("Lobster size")
+
+lobster_bar_2012
+
+# Created a bar graph displaying size counts across all five sites for 2012. WIP
+
+
+
+```
+
+
+
+
+
+
 ```{r}
 #Part 4
 
