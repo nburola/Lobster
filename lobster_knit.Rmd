@@ -96,26 +96,10 @@ trap_graph
 
 #graphs of avg counts for lobsters and traps
 
-lobster_avg<-lobster_size_t %>% 
-  select("year", "site", "size") %>% 
-  group_by(year, site) %>% 
-  count(site)
- 
-avg_graph <- lobster_avg %>% 
-  ggplot(aes(x = year, y = mean))+
-  geom_col()+
-  facet_wrap(~site)
-avg_graph
 
-#uses mean for each year
-trap_avg<-lobster_trap %>% 
-  filter(site == "AQUE" | site == "CARP" | site == "IVEE" | site == "MOHK" |site == "NAPL") %>% 
-  select("year", "site", "traps") %>% 
-  group_by(year, site) %>% 
-  summarize("mean" = mean(traps)) 
 
 #uses mean trap from surveys each year
-trap_avg2 <- trap_count %>% 
+trap_avg <- trap_count %>% 
   group_by(year, site) %>% 
   summarize(mean = mean(traps))
 
@@ -125,11 +109,7 @@ trap_graph_avg <- trap_avg %>%
   facet_wrap(~site)
 trap_graph_avg
 
-trap_graph_avg2 <- trap_avg2 %>% 
-  ggplot(aes(x = year, y = mean)) +
-  geom_col()+
-  facet_wrap(~site)
-trap_graph_avg2
+
 ```
 
 
