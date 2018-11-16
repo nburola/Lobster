@@ -71,6 +71,7 @@ lobster_count<-lobster_size_tidy %>%
   select("year", "site", "size") %>% 
   group_by(year) %>% 
   count(site) 
+
  
 abundance <- lobster_count %>% 
   ggplot(aes(x = year, y = n))+
@@ -109,7 +110,32 @@ trap_graph_avg <- trap_avg %>%
   facet_wrap(~site)
 trap_graph_avg
 
+
+
+
 ```
+
+```{r}
+#makes a graph comparing lobsters and traps
+
+lobster_count2 <- as.data.frame(lobster_count) %>% 
+  mutate(row = seq(1,30, by = 1))
+
+trap_avg2 <- as.data.frame(trap_avg) %>% 
+  mutate(row = seq(1,30, by =1))
+
+
+
+lobster_trap_combine <- left_join(lobster_count2, trap_avg2, by = 'row')
+
+comp_graph <- lobster_trap_combine %>% 
+  ggplot(aes(x = year, y = n))
+  geom_point() +
+  facet_wrap(~site.x, scales = "free")
+
+comp_graph
+```
+
 
 
 ```{r}
