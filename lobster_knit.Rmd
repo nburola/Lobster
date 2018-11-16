@@ -172,6 +172,38 @@ lobster_bar_2017
 
 ```
 
+```{r}
+# Comparison of individual sites (both MPAs and non-MPAs) for lobster counts and sizes from 2012 and from 2017.
+
+# MPAs first: IVEE
+
+IV_2012 = lobster_size_2012 %>% 
+  filter(site == "IVEE")
+
+IV_2017 = lobster_size_2017 %>% 
+  filter(site == "IVEE")
+
+IV_combined = lobster_size_tidy %>% 
+  filter(site == "IVEE") %>% 
+  group_by(year) %>% 
+  filter(year == "2012" | year == "2017") %>% 
+  select(year, size)
+
+IV_hist = ggplot(IV_combined, aes(x = size)) +
+  geom_histogram(aes(fill = year), show.legend = FALSE) +
+  facet_wrap(~ year) +
+  labs(y = "Frequency", x = "Size (mm)", title = "Lobster size frequency at Isla Vista MPA in 2012 and 2017")
+
+IV_hist
+
+
+```
+
+
+
+
+
+
 
 
 
