@@ -16,14 +16,16 @@ library(tidyverse)
 library(vcdExtra)
 library(kableExtra)
 library(gmodels)
+library(car)
+library(onewaytests)
+
 
 ```
 
 ```{r, include=FALSE}
 lobster_size <- read_csv("lobster_size_abundance.csv")
 lobster_trap <- read_csv("lobster_traps.csv")
-lobster_size
-lobster_trap
+
 ```
 
 
@@ -135,6 +137,72 @@ comp_graph <- lobster_trap_combine %>%
   facet_wrap(~site.x, scales = "free")
 
 comp_graph
+```
+
+
+```{r}
+#Part 2
+
+lobster_17 <- lobster_size_tidy %>% 
+  filter(year == 2017)
+
+lobster_17_summary <- lobster_17 %>% 
+  group_by(site) %>% 
+  summarize(mean = mean(size), n = n())
+
+#exploratory hist
+hists <- ggplot(lobster_17, aes(x = size)) +
+  geom_histogram(aes(fill = site)) +
+  facet_wrap(~site, scale = "free")
+
+hists
+
+qq <- ggplot(lobster_17, aes(sample = size)) +
+  geom_qq(aes(color = site)) +
+  facet_wrap(~site, scale = "free")
+
+qq
+
+# Based on qq plots and histograms, observations for each group appear normally distrubuted, also n>30 for all groups so means will be normally distributed by central limit theorem
+
+#Now test for equal variance
+# If the largest sample variances is < 4x greater than the smallest samople variance, then these are close enough to consider variances equal
+
+variances <- lobster_17 %>% 
+  group_by(site) %>% 
+  summarize(
+    variance = var(size)
+  )
+
+variances #the largest variance (205) is definitely not more than 4x greater than smallest variacne (86)
+
+#formal hypothesis test for equal variances - Levenes test
+# leveneTest() function in the 'car' package
+
+#H0: no difference in variacnes
+#HA: difference in variances
+
+levene_lobster <- leveneTest(size ~ site, data = lobster_17)
+
+levene_lobster
+
+#p < .05 so we would conclude that the variances are different but from previous test of largest variance being less than 4x smallest variances we can still assume equal variacnes
+
+#now ANOVA
+#H0: means across all groups are equal
+#HA: at least 2 means differ
+
+lobster_aov <- aov(size ~ site, data = lobster_17)
+
+summary(lobster_aov)
+
+#Post-hoc testing by Tukey's HSD
+#H0: there is no significant difference in pair wise means
+#HA: there is a significant difference in pair wise means
+lobster_post <- TukeyHSD(lobster_aov)
+lobster_post
+#only NAPL and IVEE differ significantly
+
 ```
 
 
@@ -285,8 +353,8 @@ legal_prop2 <- as.data.frame(legal_prop) %>%
 #making a joined table
 legal_count_prop <- left_join(legal_lobster2, legal_prop2, by = 'site') %>% 
   select("site", "legal.x", "legal.y", "illegal.x", "illegal.y") %>% 
-  mutate(legal.y = round(legal.y, 3),
-         illegal.y = round(illegal.y, 3),
+  mutate(legal_prop = round(legal.y, 3),
+         illegal_prop = round(illegal.y, 3),
          site = c("Arroyo Quemado", "Carpinteria", "Isla Vista", "Mohawk Reef", "Naples Reef" ))
 
 #making the table pretty  
@@ -303,8 +371,22 @@ count_prop_table <- kable(
 count_prop_table
 
 #run a chi square test on the table of counts
-legal_x2 <- chisq.test(legal_lobster2)
+legal_x2 <- chisq.test(legal_lobster3)
 legal_x2
 legal_x2$stdres
+
+lobster_prop_for_graph <- legal_lobster2 %>% 
+  mutate(
+    total = illegal + legal
+  ) %>% 
+  mutate(
+    prop_legal = legal/total
+  )
+
+prop_grpah<- as.data.frame(lobster_prop_for_graph) %>% 
+  ggplot(aes(x = site, y = prop_legal)) +
+  geom_col()
+
+prop_graph
 ```
 
