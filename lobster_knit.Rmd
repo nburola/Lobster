@@ -148,7 +148,7 @@ lobster_17 <- lobster_size_tidy %>%
 
 lobster_17_summary <- lobster_17 %>% 
   group_by(site) %>% 
-  summarize(mean = mean(size), n = n())
+  summarize(mean = mean(size), n = n(), sd = sd(size))
 
 #exploratory hist
 hists <- ggplot(lobster_17, aes(x = size)) +
@@ -201,8 +201,34 @@ summary(lobster_aov)
 #HA: there is a significant difference in pair wise means
 lobster_post <- TukeyHSD(lobster_aov)
 lobster_post
-#only NAPL and IVEE differ significantly
+#only NAPL and IVEE differ significantly but differ vy less than 5mm
 
+
+
+
+
+#create a column graph with error bars for means of each month
+lobster_17_graph <- ggplot(lobster_17, aes(x = site, y = size)) + 
+  geom_boxplot(outlier.size = NA) +
+  #geom_errorbar(aes(ymin = mean-sd, ymax = mean+sd, width = .3)) + #edits width of error bars
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + #rotates x axis labels
+  labs(x = "Site", y = "Mean Lobster Size (carapace length (mm))", title = "Lobster sizes in the Santa Barabara Chanel (2017)") +
+  theme(text = element_text(family = "Times New Roman")) + 
+  theme(plot.title = element_text(hjust = 0.5, size = 13)) +
+  theme(plot.subtitle = element_text(hjust = 0.5, size = 10)) +
+  theme(axis.title = element_text(size = 12), axis.text = element_text(size = 10)) 
+  #scale_y_continuous(expand = c(0,0))  #edits y axis scale and brings it down to be flush with the x axis
+  #edits y axis scale and brings it down to be flush with the x axis
+
+lobster_17_graph
+
+lobster_17_graph + 
+  annotate("text", x = 1, y = 110, label = "ab", size = 3) +
+  annotate("text", x = 2, y = 110, label = "ab", size = 3) +
+  annotate("text", x = 3, y = 110, label = "a", size = 3) +
+  annotate("text", x = 4, y = 99, label = "ab", size = 3) +
+  annotate("text", x = 5, y = 110, label = "b", size = 3)
 ```
 
 
