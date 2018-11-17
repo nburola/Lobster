@@ -183,10 +183,14 @@ lobster_bar_2017
 # MPAs first: IVEE
 
 IV_2012 = lobster_size_2012 %>% 
-  filter(site == "IVEE")
+  filter(site == "IVEE") %>%
+  ungroup(site, year) %>% 
+  pull(size)
 
 IV_2017 = lobster_size_2017 %>% 
-  filter(site == "IVEE")
+  filter(site == "IVEE") %>%
+  ungroup(site, year) %>% 
+  pull(size)
 
 IV_combined = lobster_size_tidy %>% 
   filter(site == "IVEE") %>% 
@@ -200,6 +204,30 @@ IV_hist = ggplot(IV_combined, aes(x = size)) +
   labs(y = "Frequency", x = "Size (mm)", title = "Lobster size frequency at Isla Vista MPA in 2012 and 2017")
 
 IV_hist
+
+IV_qq = ggplot(IV_combined, aes(sample = size)) +
+  geom_qq(aes(color = year), show.legend = FALSE) +
+  facet_wrap(~ year, scale = "free")
+
+IV_qq
+
+f_test_iv = var.test(IV_2012, IV_2017)
+
+
+f_test_iv
+
+t_test_iv = t.test(IV_2012, IV_2017, var.equal = TRUE)
+
+t_test_iv # ignore this, this might be wrong. this is measuring true difference in mass when I think it should be difference in counts
+
+
+# MPA 2: NAPL
+
+npl_2012 = lobster_size_2012 %>% 
+  filter(site == "NAPL")
+
+
+
 
 
 ```
