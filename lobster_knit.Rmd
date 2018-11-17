@@ -129,8 +129,9 @@ trap_avg2 <- as.data.frame(trap_avg) %>%
 lobster_trap_combine <- left_join(lobster_count2, trap_avg2, by = 'row')
 
 comp_graph <- lobster_trap_combine %>% 
-  ggplot(aes(x = year, y = n))
+  ggplot(aes(x = year.x, y = n))+
   geom_point() +
+  geom_point(aes(x = year.x, y = mean, color = 'red'))+
   facet_wrap(~site.x, scales = "free")
 
 comp_graph
