@@ -313,7 +313,8 @@ f_test_iv
 
 t_test_iv = t.test(IV_2012, IV_2017, var.equal = TRUE)
 
-t_test_iv # ignore this, this might be wrong. this is measuring true difference in mass when I think it should be difference in counts
+t_test_iv # ignore this, this might be wrong. this is measuring true difference in size when I think it should be difference in counts
+#i think it should be size - Priscilla
 
 
 # MPA 2: NAPL
