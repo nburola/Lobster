@@ -266,7 +266,7 @@ lobster_bar_2017 = ggplot(lobster_size_2017, aes(x = size))  +
 
 lobster_bar_2017
 
-# Created a bar graph displaying size counts across all five sites for 2012 and 2017. WIP
+# Created a bar graph displaying size counts across all five sites for 2012 and 2017.
 
 
 
@@ -280,18 +280,18 @@ lobster_bar_2017
 IV_2012 = lobster_size_2012 %>% 
   filter(site == "IVEE") %>%
   ungroup(site, year) %>% 
-  pull(size)
+  pull(size) #df for just IV lobster sizes in 2012
 
 IV_2017 = lobster_size_2017 %>% 
   filter(site == "IVEE") %>%
   ungroup(site, year) %>% 
-  pull(size)
+  pull(size) #df for just IV lobster sizes in 2017
 
 IV_combined = lobster_size_tidy %>% 
   filter(site == "IVEE") %>% 
   group_by(year) %>% 
   filter(year == "2012" | year == "2017") %>% 
-  select(year, size)
+  select(year, size) #one df for both 2012 and 2017 IV lobsters for normality tests
 
 IV_hist = ggplot(IV_combined, aes(x = size)) +
   geom_histogram(aes(fill = year), show.legend = FALSE) +
@@ -306,36 +306,37 @@ IV_qq = ggplot(IV_combined, aes(sample = size)) +
 
 IV_qq
 
-f_test_iv = var.test(IV_2012, IV_2017)
+f_test_iv = var.test(IV_2012, IV_2017) # testing for equal variances
 
 
-f_test_iv
+f_test_iv # variances are equal
 
 t_test_iv = t.test(IV_2012, IV_2017, var.equal = TRUE)
 
-t_test_iv # ignore this, this might be wrong. this is measuring true difference in size when I think it should be difference in counts
-#i think it should be size - Priscilla
+t_test_iv
 
 
 IV_wilcox = wilcox.test(IV_2012, IV_2017)
+IV_wilcox # p = 0.0085
+
 
 # MPA 2: NAPL
 
 npl_2012 = lobster_size_2012 %>% 
   filter(site == "NAPL") %>% 
   ungroup(site, year) %>% 
-  pull(size)
+  pull(size) # df just for naples lobsters in 2012
 
 npl_2017 = lobster_size_2017 %>% 
   filter(site == "NAPL") %>% 
   ungroup(site, year) %>% 
-  pull(size)
+  pull(size) # same but for 2017
 
 npl_combined = lobster_size_tidy %>% 
   filter(site == "NAPL") %>% 
   group_by(year) %>% 
   filter(year == "2012" | year == "2017") %>% 
-  select(year, size)
+  select(year, size) # combined 2012 and 2017 df for normality tests
 
 npl_hist = ggplot(npl_combined, aes(x = size)) +
   geom_histogram(aes(fill = year), show.legend = FALSE) +
@@ -355,7 +356,7 @@ t_test_npl
 
 
 npl_wilcox = wilcox.test(npl_2012, npl_2017)
-npl_wilcox
+npl_wilcox # p = 0.44
 
 ```
 
@@ -391,10 +392,10 @@ f_test_aq = var.test(aq_2012, aq_2017)
 f_test_aq
 
 t_test_aq = t.test(aq_2012, aq_2017, var.equal = TRUE)
-t_test_aq
+t_test_aq # p = 0.21
 
 aq_mannw = wilcox.test(aq_2012, aq_2017)
-aq_mannw
+aq_mannw # p = 0.16
 
 
 # CARP
@@ -425,12 +426,41 @@ f_test_ca = var.test(ca_2012, ca_2017)
 f_test_ca
 
 t_test_ca = t.test(ca_2012, ca_2017, var.equal = TRUE)
-t_test_ca
+t_test_ca # p = 0.18
 
 
 ca_mannw = wilcox.test(ca_2012, ca_2017)
-ca_mannw
+ca_mannw # p = 0.60
 
+# MOHK
+
+mk_2012 = lobster_size_2012 %>% 
+  filter(site == "MOHK") %>%
+  ungroup(site, year) %>% 
+  pull(size)
+
+mk_2017 = lobster_size_2017 %>% 
+  filter(site == "MOHK") %>% 
+  ungroup(site, year) %>% 
+  pull(size)
+
+mk_combined = lobster_size_tidy %>% 
+  filter(site == "MOHK") %>% 
+  group_by(year) %>% 
+  filter(year == "2012" | year == "2017") %>% 
+  select(year, size)
+
+mk_hist = ggplot(mk_combined, aes(x = size)) +
+  geom_histogram(aes(fill = year), show.legend = FALSE) +
+  facet_wrap(~ year) +
+  labs(y = "Frequency", x = "Size (mm)")
+mk_hist
+
+t_test_mk = t.test(mk_2012, mk_2017, var.equal = TRUE)
+t_test_mk # p = 0.000062
+
+mk_mannw = wilcox.test(mk_2012, mk_2017)
+mk_mannw # p = 0.00036
 
 
 ```
