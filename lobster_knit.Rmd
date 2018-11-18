@@ -201,7 +201,7 @@ summary(lobster_aov)
 #HA: there is a significant difference in pair wise means
 lobster_post <- TukeyHSD(lobster_aov)
 lobster_post
-#only NAPL and IVEE differ significantly but differ vy less than 5mm
+#only NAPL and IVEE and NAPL and CARP differ significantly but differ by less than 5mm
 
 
 
@@ -225,7 +225,7 @@ lobster_17_graph
 
 lobster_17_graph + 
   annotate("text", x = 1, y = 110, label = "ab", size = 3) +
-  annotate("text", x = 2, y = 110, label = "ab", size = 3) +
+  annotate("text", x = 2, y = 110, label = "a", size = 3) +
   annotate("text", x = 3, y = 110, label = "a", size = 3) +
   annotate("text", x = 4, y = 99, label = "ab", size = 3) +
   annotate("text", x = 5, y = 110, label = "b", size = 3)
