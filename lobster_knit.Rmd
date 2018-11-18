@@ -317,16 +317,96 @@ t_test_iv # ignore this, this might be wrong. this is measuring true difference 
 #i think it should be size - Priscilla
 
 
+IV_wilcox = wilcox.test(IV_2012, IV_2017)
+
 # MPA 2: NAPL
 
 npl_2012 = lobster_size_2012 %>% 
-  filter(site == "NAPL")
+  filter(site == "NAPL") %>% 
+  ungroup(site, year) %>% 
+  pull(size)
+
+npl_2017 = lobster_size_2017 %>% 
+  filter(site == "NAPL") %>% 
+  ungroup(site, year) %>% 
+  pull(size)
+
+npl_combined = lobster_size_tidy %>% 
+  filter(site == "NAPL") %>% 
+  group_by(year) %>% 
+  filter(year == "2012" | year == "2017") %>% 
+  select(year, size)
+
+npl_hist = ggplot(npl_combined, aes(x = size)) +
+  geom_histogram(aes(fill = year), show.legend = FALSE) +
+  facet_wrap(~ year) +
+  labs(y = "Frequency", x = "Size (mm)", title = "Lobster size frequency at Naples MPA in 2012 and 2017")
+
+npl_hist
+
+npl_qq = ggplot(npl_combined, aes(sample = size)) +
+  geom_qq(aes(color = year), show.legend = FALSE) +
+  facet_wrap(~ year, scale = "free")
+
+npl_qq
+
+t_test_npl = t.test(npl_2012, npl_2017, var.equal = TRUE)
+t_test_npl
 
 
+npl_wilcox = wilcox.test(npl_2012, npl_2017)
+npl_wilcox
+
+```
+
+```{r}
+
+# Doing the same for the non-MPA sites
+
+# AQUE
+
+aq_2012 = lobster_size_2012 %>% 
+  filter(site == "AQUE") %>%
+  ungroup(site, year) %>% 
+  pull(size)
+
+aq_2017 = lobster_size_2017 %>% 
+  filter(site == "AQUE") %>% 
+  ungroup(site, year) %>% 
+  pull(size)
+
+aq_combined = lobster_size_tidy %>% 
+  filter(site == "AQUE") %>% 
+  group_by(year) %>% 
+  filter(year == "2012" | year == "2017") %>% 
+  select(year, size)
+
+aq_hist = ggplot(aq_combined, aes(x = size)) +
+  geom_histogram(aes(fill = year), show.legend = FALSE) +
+  facet_wrap(~ year) +
+  labs(y = "Frequency", x = "Size (mm)")
+aq_hist
+
+f_test_aq = var.test(aq_2012, aq_2017)
+f_test_aq
+
+t_test_aq = t.test(aq_2012, aq_2017, var.equal = TRUE)
+t_test_aq
+
+aq_mannw = wilcox.test(aq_2012, aq_2017)
+aq_mannw
+
+
+# CARP
 
 
 
 ```
+
+
+
+
+
 
 
 
