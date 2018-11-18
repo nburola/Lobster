@@ -79,14 +79,20 @@ lobster_count<-lobster_size_tidy %>%
  
 abundance <- lobster_count %>% 
   ggplot(aes(x = year, y = n))+
-  geom_col()+
-  facet_wrap(~site)
+  geom_col(aes(fill = site), show.legend = FALSE)+
+  facet_wrap_paginate(~site, ncol = 5, nrow = 5)+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + #rotates x axis labels
+  labs(x = "Year", y = "Lobster Abundance", title = "Lobster Abundance and FIshing Pressure 2012 - 2017") +
+  theme(plot.title = element_text(hjust = 0.5, size = 13)) +
+  theme(plot.subtitle = element_text(hjust = 0.5, size = 10)) +
+  theme(axis.title = element_text(size = 12), axis.text = element_text(size = 10)) 
 abundance
 
 ```
 
 
-```{r}
+```{r, fig.height=6}
 
 #graphs of avg counts for  traps
 
@@ -110,11 +116,17 @@ trap_avg <- trap_count %>%
 
 trap_graph_avg <- trap_avg %>% 
   ggplot(aes(x = year, y = mean)) +
-  geom_col()+
-  facet_wrap(~site)
+  geom_col(aes(fill = site), show.legend = FALSE)+
+  facet_wrap_paginate(~site, nrow = 1, ncol = 5)+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + #rotates x axis labels
+  labs(x = "Year", y = "Average Number of Traps") +
+  theme(plot.title = element_text(hjust = 0.5, size = 13)) +
+  theme(plot.subtitle = element_text(hjust = 0.5, size = 10)) +
+  theme(axis.title = element_text(size = 12), axis.text = element_text(size = 10))
 trap_graph_avg
 
-
+grid.arrange(abundance, trap_graph_avg, nrow = 2)
 
 
 ```
@@ -211,12 +223,11 @@ lobster_post
 
 #create a column graph with error bars for means of each month
 lobster_17_graph <- ggplot(lobster_17, aes(x = site, y = size)) + 
-  geom_boxplot(outlier.size = NA) +
+  geom_boxplot(outlier.shape = NA, aes(color = site), show.legend = FALSE) +
   #geom_errorbar(aes(ymin = mean-sd, ymax = mean+sd, width = .3)) + #edits width of error bars
   theme_classic() +
   theme(axis.text.x = element_text(angle = 60, hjust = 1)) + #rotates x axis labels
   labs(x = "Site", y = "Mean Lobster Size (carapace length (mm))", title = "Lobster sizes in the Santa Barabara Chanel (2017)") +
-  theme(text = element_text(family = "Times New Roman")) + 
   theme(plot.title = element_text(hjust = 0.5, size = 13)) +
   theme(plot.subtitle = element_text(hjust = 0.5, size = 10)) +
   theme(axis.title = element_text(size = 12), axis.text = element_text(size = 10)) 
@@ -558,7 +569,15 @@ lobster_prop_for_graph <- legal_lobster2 %>%
 
 prop_graph<- as.data.frame(lobster_prop_for_graph) %>% 
   ggplot(aes(x = site, y = prop_legal)) +
-  geom_col()
+  geom_col()+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + #rotates x axis labels
+  labs(x = "Site", y = "Proportion of Legal Lobsters (over 82.6 mm)", title = "Legal Lobsters in the Santa Barabara Chanel (2017)") +
+  theme(plot.title = element_text(hjust = 0.5, size = 13)) +
+  theme(plot.subtitle = element_text(hjust = 0.5, size = 10)) +
+  theme(axis.title = element_text(size = 12), axis.text = element_text(size = 10)) +
+  scale_y_continuous(expand = c(0,0), limits = c(0, .35)) 
+  
 
 prop_graph
 ```
