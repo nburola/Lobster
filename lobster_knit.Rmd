@@ -2,7 +2,9 @@
 title: "LETR Sites"
 author: "Nathaniel Burola, Karan Shetty, Priscilla Hare"
 date: "November 13, 2018"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
