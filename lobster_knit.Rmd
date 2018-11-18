@@ -399,6 +399,38 @@ aq_mannw
 
 # CARP
 
+ca_2012 = lobster_size_2012 %>% 
+  filter(site == "CARP") %>%
+  ungroup(site, year) %>% 
+  pull(size)
+
+ca_2017 = lobster_size_2017 %>% 
+  filter(site == "CARP") %>% 
+  ungroup(site, year) %>% 
+  pull(size)
+
+ca_combined = lobster_size_tidy %>% 
+  filter(site == "CARP") %>% 
+  group_by(year) %>% 
+  filter(year == "2012" | year == "2017") %>% 
+  select(year, size)
+
+ca_hist = ggplot(ca_combined, aes(x = size)) +
+  geom_histogram(aes(fill = year), show.legend = FALSE) +
+  facet_wrap(~ year) +
+  labs(y = "Frequency", x = "Size (mm)")
+ca_hist
+
+f_test_ca = var.test(ca_2012, ca_2017)
+f_test_ca
+
+t_test_ca = t.test(ca_2012, ca_2017, var.equal = TRUE)
+t_test_ca
+
+
+ca_mannw = wilcox.test(ca_2012, ca_2017)
+ca_mannw
+
 
 
 ```
