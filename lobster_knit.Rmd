@@ -18,6 +18,8 @@ library(kableExtra)
 library(gmodels)
 library(car)
 library(onewaytests)
+library(ggforce)
+library(gridExtra)
 
 
 ```
@@ -233,7 +235,7 @@ lobster_17_graph +
 
 
 
-```{r}
+```{r, fig.height=8, fig.width = 7}
 # Part 3: Changes in lobster size between MPA and non-MPA sites
 
 lobster_size_2012 = lobster_size_tidy %>%
@@ -244,10 +246,11 @@ lobster_size_2012 = lobster_size_tidy %>%
 lobster_size_2012
 
 lobster_bar_2012 = ggplot(lobster_size_2012, aes(x = size))  +
-  geom_bar(aes(color = site)) +
-  facet_wrap(~ site) +
-  xlab("Year") +
-  ylab("Lobster size")
+  geom_bar(aes(fill = site), binwidth = 8, color = "black", show.legend = FALSE) +
+  facet_wrap_paginate(~ site, ncol = 1, nrow = 5) +
+  xlab("Lobster Size") +
+  ylab("Counts") +
+  theme_classic()
 
 lobster_bar_2012
 
@@ -258,13 +261,14 @@ lobster_size_2017 = lobster_size_tidy %>%
   filter(year == "2017")
 
 lobster_bar_2017 = ggplot(lobster_size_2017, aes(x = size))  +
-  geom_bar(aes(color = site)) +
-  facet_wrap(~ site) +
-  xlab("Year") +
-  ylab("Lobster size")
+  geom_bar(aes(fill = site), binwidth = 8, color = "black", show.legend = FALSE) +
+  facet_wrap_paginate(~ site, ncol = 1, nrow = 5) +
+  xlab("Lobster size") +
+  ylab("Counts") +
+  theme_classic()
 
+grid.arrange(lobster_bar_2012, lobster_bar_2017, ncol = 2)
 
-lobster_bar_2017
 
 # Created a bar graph displaying size counts across all five sites for 2012 and 2017.
 
@@ -522,8 +526,8 @@ legal_prop2 <- as.data.frame(legal_prop) %>%
 #making a joined table
 legal_count_prop <- left_join(legal_lobster2, legal_prop2, by = 'site') %>% 
   select("site", "legal.x", "legal.y", "illegal.x", "illegal.y") %>% 
-  mutate(legal_prop = round(legal.y, 3),
-         illegal_prop = round(illegal.y, 3),
+  mutate(legal.y = round(legal.y, 3),
+         illegal.y = round(illegal.y, 3),
          site = c("Arroyo Quemado", "Carpinteria", "Isla Vista", "Mohawk Reef", "Naples Reef" ))
 
 #making the table pretty  
@@ -552,7 +556,7 @@ lobster_prop_for_graph <- legal_lobster2 %>%
     prop_legal = legal/total
   )
 
-prop_grpah<- as.data.frame(lobster_prop_for_graph) %>% 
+prop_graph<- as.data.frame(lobster_prop_for_graph) %>% 
   ggplot(aes(x = site, y = prop_legal)) +
   geom_col()
 
